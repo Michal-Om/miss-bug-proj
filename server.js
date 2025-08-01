@@ -4,11 +4,12 @@ import { bugService } from './services/bug.service.js'
 import { loggerService } from './services/logger.service.js'
 
 const app = express()
-app.get('/', (req, res) => res.send('Hello there'))
+app.use(express.static('public'))
+
+// app.get('/', (req, res) => res.send('Hello there'))
 app.listen(3030, () => console.log('Server ready at http://localhost:3030'))
 
 
-app.use(express.static('public'))
 
 app.get('/api/bug', (req, res) => {
     bugService.query()
@@ -55,11 +56,6 @@ app.get('/api/bug/:bugId/remove', (req, res) => {
             res.status(400).send(err)
         })
 })
-
-app.get('/', (req, res) => {
-    res.send('Welcome to express server')
-})
-
 
 
 // app.get('/nono', (req, res) => res.redirect('/'))
