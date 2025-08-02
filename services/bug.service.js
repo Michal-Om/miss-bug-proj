@@ -1,7 +1,6 @@
+
 import { loggerService } from './logger.service.js'
 import { makeId, readJsonFile, writeJsonFile } from './util.service.js'
-
-const bugs = readJsonFile('./data/bug.json')
 
 export const bugService = {
     query,
@@ -9,6 +8,8 @@ export const bugService = {
     remove,
     save,
 }
+
+const bugs = readJsonFile('./data/bug.json')
 
 function query() {
     return Promise.resolve(bugs)
@@ -36,22 +37,30 @@ function remove(bugId) {
     return _savebugs()
 }
 
-function save(bugToSave) {
-    if (bugToSave._id) {
-        const idx = bugs.findIndex(bug => bug._id === bugToSave._id)
+function save(bug) {
+    console.log('bug to save: ', bug)
+
+    if (bug._id) {
+        const idx = bugs.findIndex(currBug => currBug._id === bug._id)
 
         if (idx === -1) {
-            loggerService.error(`Couldnt find bug ${bugToSave._id} in bugService`)
+            loggerService.error(`Couldnt find bug ${bug._id} in bugService`)
             return Promise.reject(`Couldnt save bug`)
         }
-
-        bugs.splice(idx, 1, bugToSave)
+        // bugToSave.createdAt = bugs[idx].createdAt
+        // bugs.splice(idx, 1, bugToSave)
+        bugs[idx] = { ...bugs[idx], ...bug } // Merge updated fields into the existing bug while preserving unchanged properties
     } else {
-        bugToSave._id = makeId()
-        bugs.push(bugToSave)
+        bug._id = makeId()
+        bug.createdAt = Date.now()
+        bugs.unshift(bug)
     }
     return _savebugs()
-        .then(() => bugToSave)
+        .then(() => bug)
+        .catch(err => {
+            loggerService.error('Failed to write bugs to file', err)
+            return Promise.reject(err)
+        })
 }
 
 function _savebugs() {
