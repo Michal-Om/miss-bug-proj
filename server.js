@@ -2,9 +2,11 @@ import express from 'express'
 
 import { bugService } from './services/bug.service.js'
 import { loggerService } from './services/logger.service.js'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 app.use(express.static('public'))
+app.use(cookieParser())
 
 // Basic - Routing in express
 // app.get('/', (req, res) => res.send('Hello there'))
@@ -46,6 +48,27 @@ app.get('/api/bug/:bugId', (req, res) => {
     const bugId = req.params.bugId
     console.log('Requested bugId:', bugId)
 
+    let visitedBugs = []
+    //if cookie exists parse into an array
+    if (req.cookies.visitedBugs) {
+        visitedBugs = JSON.parse(req.cookies.visitedBugs)
+    } else {
+        visitedBugs = []
+    }
+    console.log('Visited bugs:', visitedBugs)
+
+    if (!visitedBugs.includes(bugId)) {
+        if (visitedBugs.length >= 3) {
+            console.log('User has reached limit of 3 bugs')
+            return res.status(401).send('Wait for a bit')
+        }
+        visitedBugs.push(bugId)
+    }
+
+    //save to cookie:
+    res.cookie('visitedBugs', JSON.stringify(visitedBugs), { maxAge: 1000 * 20 })
+    console.log('User visited at the following bugs:', visitedBugs)
+
     bugService.getById(bugId)
         .then(bug => res.send(bug))
         .catch(err => {
@@ -65,6 +88,7 @@ app.get('/api/bug/:bugId/remove', (req, res) => {
             res.status(400).send('Cannot get bug')
         })
 })
+
 
 const port = 3030
 app.listen(port, () => loggerService.info(`Server listening on port http://127.0.0.1:${port}/`))
