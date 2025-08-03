@@ -10,21 +10,22 @@ export const bugService = {
 }
 
 function query(filterBy = {}) {
-    return axios.get(BASE_URL)
+    return axios.get(BASE_URL, { params: filterBy })
         .then(res => res.data)
-        .then(bugs => {
+    //FRONTEND FILTER
+    // .then(bugs => {
 
-            if (filterBy.txt) {
-                const regExp = new RegExp(filterBy.txt, 'i')
-                bugs = bugs.filter(bug => regExp.test(bug.title))
-            }
+    //     if (filterBy.txt) {
+    //         const regExp = new RegExp(filterBy.txt, 'i')
+    //         bugs = bugs.filter(bug => regExp.test(bug.title))
+    //     }
 
-            if (filterBy.minSeverity) {
-                bugs = bugs.filter(bug => bug.severity >= filterBy.minSeverity)
-            }
+    //     if (filterBy.minSeverity) {
+    //         bugs = bugs.filter(bug => bug.severity >= filterBy.minSeverity)
+    //     }
 
-            return bugs
-        })
+    //     return bugs
+    // })
 }
 
 function getById(bugId) {
@@ -38,13 +39,13 @@ function remove(bugId) {
 }
 
 function save(bug) {
-    var queryStr = `?title=${bug.title}&description=${bug.description}&severity=${bug.severity}`
-    if (bug._id) queryStr += `&_id=${bug._id}`
-    console.log('Saving bug with query:', queryStr)
+    return axios.get(BASE_URL + 'save', { params: bug })
+    // var queryStr = `?title=${bug.title}&description=${bug.description}&severity=${bug.severity}`
+    // if (bug._id) queryStr += `&_id=${bug._id}`
+    // console.log('Saving bug with query:', queryStr)
 
-    // if (bug.createdAt) queryStr += `&createdAt=${bug.createdAt}`
-    return axios.get(BASE_URL + 'save/' + queryStr)
-        .then(res => res.data)
+    // return axios.get(BASE_URL + 'save/' + queryStr)
+    //     .then(res => res.data)
 }
 
 
