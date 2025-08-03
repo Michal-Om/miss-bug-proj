@@ -15,7 +15,14 @@ app.use(cookieParser())
 // Real routing express
 //List
 app.get('/api/bug', (req, res) => {
-    bugService.query()
+    //BACKEND FILTER
+    const filterBy = {
+        txt: req.query.txt,
+        minSeverity: +req.query.minSeverity,
+    }
+    console.log('filterBy:', filterBy)
+
+    bugService.query(filterBy)
         .then(bugs => res.send(bugs))
         .catch(err => {
             loggerService.error('Cannot get bugs', err)
