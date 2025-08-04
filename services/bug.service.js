@@ -57,12 +57,13 @@ function save(bug) {
             loggerService.error(`Couldnt find bug ${bug._id} in bugService`)
             return Promise.reject(`Couldnt save bug`)
         }
-        // bugToSave.createdAt = bugs[idx].createdAt
+        // bug.createdAt = bugs[idx].createdAt
         // bugs.splice(idx, 1, bugToSave)
         bugs[idx] = { ...bugs[idx], ...bug } // Merge updated fields into the existing bug while preserving unchanged properties
     } else {
         bug._id = makeId()
         bug.createdAt = Date.now()
+        bug.labels = bug.labels || []
         bugs.unshift(bug)
     }
     return _savebugs()

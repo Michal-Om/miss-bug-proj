@@ -4,41 +4,71 @@
         "title": "Bug 1754134347007",
         "description": "njnkv",
         "severity": 3,
-        "createdAt": 1754134355102
+        "createdAt": 1754134355102,
+        "labels": [
+            "unverified",
+            "low-priority",
+            "triage-needed"
+        ]
     },
     {
         "_id": "Wagbc",
         "title": "new bug",
         "severity": 7,
         "createdAt": 1754134180650,
-        "description": "nothing"
+        "description": "nothing",
+        "labels": [
+            "high-priority",
+            "backend",
+            "urgent"
+        ]
     },
     {
         "_id": "bZoiH",
         "title": "new bug",
         "severity": 5,
         "createdAt": 1754128789966,
-        "description": "some"
+        "description": "some",
+        "labels": [
+            "in-review",
+            "frontend",
+            "medium-impact"
+        ]
     },
     {
         "_id": "G7Klf",
         "title": "Page not loading",
         "description": "Homepage hangs indefinitely on Chrome.",
         "severity": 4,
-        "createdAt": 1722303600000
+        "createdAt": 1722303600000,
+        "labels": [
+            "browser-specific",
+            "performance",
+            "needs-debugging"
+        ]
     },
     {
         "_id": "Q9Lmz",
         "title": "UI glitch on dashboard",
         "description": "Graph overlaps with sidebar on small screens.",
         "severity": 2,
-        "createdAt": 1722476400000
+        "createdAt": 1722476400000,
+        "labels": [
+            "ui",
+            "responsive",
+            "minor"
+        ]
     },
     {
         "_id": "oqAed",
         "title": "Cannot save",
         "description": "problem with clicking save",
         "severity": 3,
-        "createdAt": "1722390000000"
+        "createdAt": "1722390000000",
+        "labels": [
+            "data-loss-risk",
+            "saving-issue",
+            "mid-priority"
+        ]
     }
 ]
