@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser'
 const app = express()
 app.use(express.static('public'))
 app.use(cookieParser())
+app.use(express.json())
 
 // Basic - Routing in express
 // app.get('/', (req, res) => res.send('Hello there'))
@@ -32,13 +33,14 @@ app.get('/api/bug', (req, res) => {
 
 //Save
 app.get('/api/bug/save', (req, res) => {
-    const { title, description, severity, _id } = req.query
+    const { title, description, severity, _id, labels } = req.query
     console.log('Server received save request:', req.query)
     const bugToSave = {
         _id,
         title,
         description,
         severity: +severity,
+        labels: Array.isArray(labels) ? labels : labels ? [labels] : []
     }
     console.log('Bug to save:', bugToSave)
 
