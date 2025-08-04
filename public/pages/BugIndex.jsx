@@ -32,7 +32,13 @@ export function BugIndex() {
         const bug = {
             title: prompt('Bug title?', 'Bug ' + Date.now()),
             severity: +prompt('Bug severity?', 3),
-            description: prompt('Bug description?')
+            description: prompt('Bug description?'),
+            labels: (
+                prompt('Bug labels? (comma separated)', '') || ''
+            )
+                .split(',')
+                .map(label => label.trim())
+                .filter(label => label)
         }
 
         bugService.save(bug)
@@ -46,7 +52,16 @@ export function BugIndex() {
     function onEditBug(bug) {
         const severity = +prompt('New severity?', bug.severity)
         const description = prompt('New description?', bug.description)
-        const bugToSave = { ...bug, severity, description }
+        const labels = (
+            prompt('New labels? (comma separated)',
+                Array.isArray(bug.labels) ? bug.labels.join(',') : ''
+            ) || ''
+        )
+            .split(',')
+            .map(label => label.trim())
+            .filter(label => label)
+
+        const bugToSave = { ...bug, severity, description, labels }
 
         bugService.save(bugToSave)
             .then(savedBug => {
