@@ -9,17 +9,15 @@ app.use(express.static('public'))
 app.use(cookieParser())
 app.use(express.json())
 
-// Basic - Routing in express
-// app.get('/', (req, res) => res.send('Hello there'))
-//app.get('/nono', (req, res) => res.redirect('/'))
-
 // Real routing express
 //List
 app.get('/api/bug', (req, res) => {
+    console.log('GETTING BUGS');
+
     //BACKEND FILTER
     const filterBy = {
-        txt: req.query.txt,
-        minSeverity: +req.query.minSeverity,
+        txt: req.query.txt || '',
+        minSeverity: +req.query.minSeverity || 1,
     }
     console.log('filterBy:', filterBy)
 
@@ -31,16 +29,36 @@ app.get('/api/bug', (req, res) => {
         })
 })
 
-//Save
-app.get('/api/bug/save', (req, res) => {
-    const { title, description, severity, _id, labels } = req.query
-    console.log('Server received save request:', req.query)
+//Creat
+app.post('/api/bug', (req, res) => {
+    const { title, description, severity, labels } = req.body
+    console.log('Server received save request:', req.body)
+    const bugToSave = {
+        title,
+        description,
+        severity: +severity,
+        labels
+    }
+    console.log('Bug to save:', bugToSave)
+
+    bugService.save(bugToSave)
+        .then(savedbug => res.send(savedbug))
+        .catch(err => {
+            loggerService.error('Failed to save bug', err)
+            res.status(400).send('Cannot save bug')
+        })
+})
+
+//Update
+app.put('/api/bug/:bugId', (req, res) => {
+    const { _id, title, description, severity, labels } = req.body
+    console.log('Server received save request:', req.body)
     const bugToSave = {
         _id,
         title,
         description,
         severity: +severity,
-        labels: Array.isArray(labels) ? labels : labels ? [labels] : []
+        labels
     }
     console.log('Bug to save:', bugToSave)
 
@@ -54,7 +72,8 @@ app.get('/api/bug/save', (req, res) => {
 
 //Read - getById
 app.get('/api/bug/:bugId', (req, res) => {
-    const bugId = req.params.bugId
+    const { bugId } = req.params
+    // const bugId = req.params.bugId
     console.log('Requested bugId:', bugId)
 
     let visitedBugs = []
@@ -87,8 +106,8 @@ app.get('/api/bug/:bugId', (req, res) => {
 })
 
 //Remove
-app.get('/api/bug/:bugId/remove', (req, res) => {
-    const bugId = req.params.bugId
+app.delete('/api/bug/:bugId', (req, res) => {
+    const { bugId } = req.params
 
     bugService.remove(bugId)
         .then(() => res.send(`bug ${bugId} deleted`))

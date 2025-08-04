@@ -24,18 +24,6 @@
         ]
     },
     {
-        "_id": "bZoiH",
-        "title": "new bug",
-        "severity": 5,
-        "createdAt": 1754128789966,
-        "description": "some",
-        "labels": [
-            "in-review",
-            "frontend",
-            "medium-impact"
-        ]
-    },
-    {
         "_id": "G7Klf",
         "title": "Page not loading",
         "description": "Homepage hangs indefinitely on Chrome.",

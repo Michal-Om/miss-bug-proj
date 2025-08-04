@@ -34,18 +34,16 @@ function getById(bugId) {
 }
 
 function remove(bugId) {
-    return axios.get(BASE_URL + bugId + '/remove')
+    return axios.delete(BASE_URL + bugId)
         .then(res => res.data) // why not needed?
 }
 
 function save(bug) {
-    return axios.get(BASE_URL + 'save', { params: bug })
-    // var queryStr = `?title=${bug.title}&description=${bug.description}&severity=${bug.severity}`
-    // if (bug._id) queryStr += `&_id=${bug._id}`
-    // console.log('Saving bug with query:', queryStr)
-
-    // return axios.get(BASE_URL + 'save/' + queryStr)
-    //     .then(res => res.data)
+    if (bug._id) {
+        return axios.put(BASE_URL + bug._id, bug).then(res => res.data)
+    } else {
+        return axios.post(BASE_URL, bug).then(res => res.data)
+    }
 }
 
 
