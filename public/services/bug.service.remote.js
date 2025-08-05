@@ -46,7 +46,6 @@ function save(bug) {
     }
 }
 
-
 function getDefaultFilter() {
     return { txt: '', minSeverity: 0 }
 }

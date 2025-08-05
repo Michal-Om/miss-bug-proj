@@ -7,6 +7,7 @@ export const bugService = {
     getById,
     remove,
     save,
+    getEmptyBug
 }
 
 const bugs = readJsonFile('./data/bug.json')
@@ -62,8 +63,8 @@ function save(bug) {
         bugs[idx] = { ...bugs[idx], ...bug } // Merge updated fields into the existing bug while preserving unchanged properties
     } else {
         bug._id = makeId()
-        bug.createdAt = Date.now()
-        bug.labels = bug.labels || []
+        // bug.createdAt = Date.now()
+        // bug.labels = bug.labels || []
         bugs.unshift(bug)
     }
     return _savebugs()
@@ -76,4 +77,14 @@ function save(bug) {
 
 function _savebugs() {
     return writeJsonFile('./data/bug.json', bugs)
+}
+
+function getEmptyBug({ title = '', description = '', severity = 1, labels = [] }) {
+    return {
+        title: title,
+        severity: severity,
+        createdAt: Date.now(),
+        description: description,
+        labels: labels
+    }
 }

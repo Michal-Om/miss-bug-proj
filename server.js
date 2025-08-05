@@ -1,8 +1,8 @@
 import express from 'express'
+import cookieParser from 'cookie-parser'
 
 import { bugService } from './services/bug.service.js'
 import { loggerService } from './services/logger.service.js'
-import cookieParser from 'cookie-parser'
 
 const app = express()
 app.use(express.static('public'))
@@ -31,15 +31,18 @@ app.get('/api/bug', (req, res) => {
 
 //Creat
 app.post('/api/bug', (req, res) => {
-    const { title, description, severity, labels } = req.body
+    // const { title, description, severity, labels } = req.body
     console.log('Server received save request:', req.body)
-    const bugToSave = {
-        title,
-        description,
-        severity: +severity,
-        labels
-    }
-    console.log('Bug to save:', bugToSave)
+    const bugToSave = bugService.getEmptyBug(req.body)
+    console.log(bugToSave)
+
+    // const bugToSave = {
+    //     title,
+    //     description,
+    //     severity: +severity,
+    //     labels
+    // }
+    // console.log('Bug to save:', bugToSave)
 
     bugService.save(bugToSave)
         .then(savedbug => res.send(savedbug))
@@ -119,7 +122,9 @@ app.delete('/api/bug/:bugId', (req, res) => {
 
 
 const port = 3030
-app.listen(port, () => loggerService.info(`Server listening on port http://127.0.0.1:${port}/`))
+// app.listen(port, () => loggerService.info(`Server listening on port http://127.0.0.1:${port}/`))
 
-
+app.listen(port, () => {
+    console.log(`Listening on http://127.0.0.1:${port}/`)
+})
 
