@@ -4,20 +4,35 @@
     "title": "Cannot save",
     "description": "problem with clicking save",
     "severity": 3,
-    "createdAt": 1722390000000
+    "createdAt": 1722390000000,
+    "labels": [
+      "data-loss-risk",
+      "saving-issue",
+      "mid-priority"
+    ]
   },
   {
     "_id": "G7Klf",
     "title": "Page not loading",
     "description": "Homepage hangs indefinitely on Chrome.",
     "severity": 4,
-    "createdAt": 1722303600000
+    "createdAt": 1722303600000,
+    "labels": [
+      "browser-specific",
+      "performance",
+      "needs-debugging"
+    ]
   },
   {
     "_id": "Q9Lmz",
     "title": "UI glitch on dashboard",
     "description": "Graph overlaps with sidebar on small screens.",
     "severity": 2,
-    "createdAt": 1722476400000
+    "createdAt": 1722476400000,
+    "labels": [
+      "ui",
+      "responsive",
+      "minor"
+    ]
   }
 ]

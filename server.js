@@ -12,16 +12,25 @@ app.use(express.json())
 // Real routing express
 //List
 app.get('/api/bug', (req, res) => {
+
     console.log('GETTING BUGS');
-
+    const { txt, minSeverity, sortBy, sortDir, pageIdx } = req.query
     //BACKEND FILTER
-    const filterBy = {
-        txt: req.query.txt || '',
-        minSeverity: +req.query.minSeverity || 1,
+    const filter = {
+        txt: txt || '',
+        minSeverity: +minSeverity || 1,
     }
-    console.log('filterBy:', filterBy)
+    console.log('filterBy:', filter)
 
-    bugService.query(filterBy)
+    const sort = {
+        sortBy: sortBy,
+        sortDir: parseInt(sortDir) || 1
+    }
+
+    const page = {
+        pageIdx: parseInt(pageIdx) || 0
+    }
+    bugService.query(filter, sort, page)
         .then(bugs => res.send(bugs))
         .catch(err => {
             loggerService.error('Cannot get bugs', err)
@@ -31,18 +40,9 @@ app.get('/api/bug', (req, res) => {
 
 //Creat
 app.post('/api/bug', (req, res) => {
-    // const { title, description, severity, labels } = req.body
     console.log('Server received save request:', req.body)
     const bugToSave = bugService.getEmptyBug(req.body)
     console.log(bugToSave)
-
-    // const bugToSave = {
-    //     title,
-    //     description,
-    //     severity: +severity,
-    //     labels
-    // }
-    // console.log('Bug to save:', bugToSave)
 
     bugService.save(bugToSave)
         .then(savedbug => res.send(savedbug))

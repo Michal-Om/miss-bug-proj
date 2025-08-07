@@ -7,23 +7,51 @@ export const bugService = {
     getById,
     remove,
     save,
-    getEmptyBug
+    getEmptyBug,
+    getTotalCount
 }
 
 const bugs = readJsonFile('./data/bug.json')
+const BUGS_PER_PAGE = 4
+let totalPages = null
 
-function query(filterBy = {}) {
-    let bugToDisplay = bugs
-    if (filterBy.txt) {
-        const regExp = new RegExp(filterBy.txt, 'i')
-        bugToDisplay = bugToDisplay.filter(bug => regExp.test(bug.title))
+function query(filter, sort, page) {
+    console.log('Query called with filter:', filter, 'sort:', sort, 'page:', page)
 
+    let bugsToDisplay = bugs
+    if (filter.txt) {
+        console.log(filter, sort, page)
+        const regex = new RegExp(filter.txt, 'i')
+        bugsToDisplay = bugsToDisplay.filter(bug => regex.test(bug.title)
+            || regex.test(bug.description)
+            || bug.labels.some(label => regex.test(label)) //.some() returns true if at least one element in the array passes the test function
+        )
     }
-    if (filterBy.minSeverity) {
-        bugToDisplay = bugToDisplay.filter(bug => bug.severity >= filterBy.minSeverity)
+    if (filter.minSeverity) {
+        bugsToDisplay = bugsToDisplay.filter(bug => bug.severity >= filter.minSeverity)
     }
 
-    return Promise.resolve(bugToDisplay)
+    if (sort.sortBy) { //title, severity, createdAt..
+        console.log(filter, sort, page)
+        const numericValues = ['severity', 'createdAt']
+        if (numericValues.includes(sort.sortBy)) {
+            bugsToDisplay.sort((a, b) => (a[sort.sortBy] - b[sort.sortBy]) * sort.sortDir)
+        } else {
+            bugsToDisplay.sort((a, b) => (a[sort.sortBy].localeCompare(b[sort.sortBy])) * sort.sortDir)
+        }
+    }
+
+    const totalPages = Math.ceil(bugsToDisplay.length / BUGS_PER_PAGE)
+    let pageIdx = page.pageIdx
+
+    if (pageIdx < 0) pageIdx = totalPages - 1
+    if (pageIdx >= totalPages) pageIdx = 0
+
+    let startIndex = pageIdx * BUGS_PER_PAGE
+    let endIndex = startIndex + BUGS_PER_PAGE
+    bugsToDisplay = bugsToDisplay.slice(startIndex, endIndex)
+
+    return Promise.resolve(bugsToDisplay)
 }
 
 function getById(bugId) {
@@ -58,13 +86,10 @@ function save(bug) {
             loggerService.error(`Couldnt find bug ${bug._id} in bugService`)
             return Promise.reject(`Couldnt save bug`)
         }
-        // bug.createdAt = bugs[idx].createdAt
-        // bugs.splice(idx, 1, bugToSave)
+
         bugs[idx] = { ...bugs[idx], ...bug } // Merge updated fields into the existing bug while preserving unchanged properties
     } else {
         bug._id = makeId()
-        // bug.createdAt = Date.now()
-        // bug.labels = bug.labels || []
         bugs.unshift(bug)
     }
     return _savebugs()
@@ -77,6 +102,10 @@ function save(bug) {
 
 function _savebugs() {
     return writeJsonFile('./data/bug.json', bugs)
+}
+
+function getTotalCount() {
+    return Promise.resolve(totalPages)
 }
 
 function getEmptyBug({ title = '', description = '', severity = 1, labels = [] }) {
