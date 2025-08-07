@@ -9,12 +9,19 @@ import { BugList } from '../cmps/BugList.jsx'
 export function BugIndex() {
     const [bugs, setBugs] = useState(null)
     const [filterBy, setFilterBy] = useState(bugService.getDefaultFilter())
+    const [sortBy, setSortBy] = useState({ sortBy: 'title', sortDir: 1 })
+    const [currentPage, setCurrentPage] = useState(0)
+    const [totalPages, setTotalPages] = useState(1)
 
-    useEffect(loadBugs, [filterBy])
+    useEffect(loadBugs, [filterBy, sortBy, currentPage])
 
     function loadBugs() {
-        bugService.query(filterBy)
-            .then(setBugs)
+        bugService.query(filterBy, sortBy, { pageIdx: currentPage })
+            .then(({ bugs, totalPages }) => {
+                setBugs(bugs)
+                setTotalPages(totalPages)
+            })
+
             .catch(err => showErrorMsg(`Couldn't load bugs - ${err}`))
     }
 
@@ -78,17 +85,62 @@ export function BugIndex() {
         setFilterBy(prevFilter => ({ ...prevFilter, ...filterBy }))
     }
 
-    return <section className="bug-index main-content">
+    function onSetSortBy(newSortBy) {
+        setSortBy(prevSort => ({
+            sortBy: newSortBy,
+            sortDir: prevSort.sortBy === newSortBy ? prevSort.sortDir * -1 : 1
+        }))
+    }
 
-        <BugFilter filterBy={filterBy} onSetFilterBy={onSetFilterBy} />
-        <header>
-            <h2>Bug List</h2>
-            <button onClick={onAddBug}>Add Bug</button>
-        </header>
+    function onSortChange(ev) {
+        const field = ev.target.value
+        onSetSortBy(field)
+    }
 
-        <BugList
-            bugs={bugs}
-            onRemoveBug={onRemoveBug}
-            onEditBug={onEditBug} />
-    </section>
+    function onSetSortDir(dir) {
+        setSortBy(prev => ({ ...prev, sortDir: dir }))
+    }
+
+    function onChangePage(diff) {
+        setCurrentPage(prev => {
+            const nextPage = prev + diff
+            if (nextPage < 0 || nextPage >= totalPages) return prev
+            return nextPage
+        })
+    }
+
+    return (
+        <section className="bug-index main-content">
+
+            <BugFilter filterBy={filterBy} onSetFilterBy={onSetFilterBy} />
+            <div className="sort-controls">
+                <label>Sort by: &nbsp;
+                    <select value={sortBy.sortBy} onChange={onSortChange}>
+                        <option value="title">Title</option>
+                        <option value="severity">Severity</option>
+                        <option value="createdAt">Created At</option>
+                    </select>
+                </label>
+                <span className="sort-arrow" onClick={() => onSetSortDir(1)}>▲</span>
+                <span className="sort-arrow" onClick={() => onSetSortDir(-1)}>▼</span>
+            </div>
+
+
+            <header>
+                <h2>Bug List</h2>
+                <button onClick={onAddBug}>Add Bug</button>
+            </header>
+            <section className="bug-controls">
+                <button onClick={() => onChangePage(-1)} disabled={currentPage === 0}>
+                    Prev
+                </button>
+                <span>Page: {currentPage + 1}</span>
+                <button onClick={() => onChangePage(1)} disabled={currentPage === totalPages - 1}>Next</button>
+            </section>
+            <BugList
+                bugs={bugs}
+                onRemoveBug={onRemoveBug}
+                onEditBug={onEditBug} />
+        </section>
+    )
 }

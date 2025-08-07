@@ -9,8 +9,13 @@ export const bugService = {
     getDefaultFilter
 }
 
-function query(filterBy = {}) {
-    return axios.get(BASE_URL, { params: filterBy })
+function query(filterBy = {}, sortBy = {}, page = {}) {
+    const params = {
+        ...filterBy,
+        ...sortBy,
+        ...page
+    }
+    return axios.get(BASE_URL, { params })
         .then(res => res.data)
     //FRONTEND FILTER
     // .then(bugs => {

@@ -20,7 +20,6 @@ function query(filter, sort, page) {
 
     let bugsToDisplay = bugs
     if (filter.txt) {
-        console.log(filter, sort, page)
         const regex = new RegExp(filter.txt, 'i')
         bugsToDisplay = bugsToDisplay.filter(bug => regex.test(bug.title)
             || regex.test(bug.description)
@@ -32,7 +31,6 @@ function query(filter, sort, page) {
     }
 
     if (sort.sortBy) { //title, severity, createdAt..
-        console.log(filter, sort, page)
         const numericValues = ['severity', 'createdAt']
         if (numericValues.includes(sort.sortBy)) {
             bugsToDisplay.sort((a, b) => (a[sort.sortBy] - b[sort.sortBy]) * sort.sortDir)
@@ -44,14 +42,17 @@ function query(filter, sort, page) {
     const totalPages = Math.ceil(bugsToDisplay.length / BUGS_PER_PAGE)
     let pageIdx = page.pageIdx
 
-    if (pageIdx < 0) pageIdx = totalPages - 1
-    if (pageIdx >= totalPages) pageIdx = 0
+    if (pageIdx < 0) pageIdx = 0
+    if (pageIdx >= totalPages) pageIdx = totalPages - 1
 
     let startIndex = pageIdx * BUGS_PER_PAGE
     let endIndex = startIndex + BUGS_PER_PAGE
     bugsToDisplay = bugsToDisplay.slice(startIndex, endIndex)
 
-    return Promise.resolve(bugsToDisplay)
+    return Promise.resolve({
+        bugs: bugsToDisplay,
+        totalPages
+    })
 }
 
 function getById(bugId) {
