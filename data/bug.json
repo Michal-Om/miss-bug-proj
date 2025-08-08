@@ -9,7 +9,11 @@
             "unverified",
             "low-priority",
             "triage-needed"
-        ]
+        ],
+        "creator": {
+            "_id": "u101",
+            "fullname": "Puki Ja"
+        }
     },
     {
         "_id": "Wagbc",
@@ -21,7 +25,11 @@
             "high-priority",
             "backend",
             "urgent"
-        ]
+        ],
+        "creator": {
+            "_id": "u102",
+            "fullname": "Muki Li"
+        }
     },
     {
         "_id": "G7Klf",
@@ -33,7 +41,11 @@
             "browser-specific",
             "performance",
             "needs-debugging"
-        ]
+        ],
+        "creator": {
+            "_id": "u103",
+            "fullname": "Tuki Bo"
+        }
     },
     {
         "_id": "Q9Lmz",
@@ -45,18 +57,26 @@
             "ui",
             "responsive",
             "minor"
-        ]
+        ],
+        "creator": {
+            "_id": "u104",
+            "fullname": "Luki Ma"
+        }
     },
     {
         "_id": "oqAed",
         "title": "Cannot save",
         "description": "problem with clicking save",
         "severity": 3,
-        "createdAt": "1722390000000",
+        "createdAt": 1722390000000,
         "labels": [
             "data-loss-risk",
             "saving-issue",
             "mid-priority"
-        ]
+        ],
+        "creator": {
+            "_id": "u105",
+            "fullname": "Zuki Ka"
+        }
     }
 ]

@@ -122,9 +122,9 @@ app.delete('/api/bug/:bugId', (req, res) => {
 
 
 const port = 3030
-// app.listen(port, () => loggerService.info(`Server listening on port http://127.0.0.1:${port}/`))
+app.listen(port, () => loggerService.info(`Server listening on port http://127.0.0.1:${port}/`))
 
-app.listen(port, () => {
-    console.log(`Listening on http://127.0.0.1:${port}/`)
-})
+// app.listen(port, () => {
+//     console.log(`Listening on http://127.0.0.1:${port}/`)
+// })
 
