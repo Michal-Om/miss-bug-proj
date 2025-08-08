@@ -1,8 +1,7 @@
 
-import fs from 'fs'
-import { utilService } from './util.service.js'
+import { makeId, readJsonFile, writeJsonFile } from './util.service.js'
 
-let users = utilService.readJsonFile('data/user.json')
+let users = readJsonFile('data/user.json')
 
 export const userService = {
     query,
@@ -44,7 +43,7 @@ function add(user) {
         .then(existingUser => {
             if (existingUser) return Promise.reject('Username taken')
 
-            user._id = utilService.makeId()
+            user._id = makeId()
             // Later, we will call the authService here to encrypt the password
             users.push(user)
 
@@ -58,13 +57,6 @@ function add(user) {
 }
 
 function _saveUsersToFile() {
-    return new Promise((resolve, reject) => {
-        const usersStr = JSON.stringify(users, null, 2)
-        fs.writeFile('data/user.json', usersStr, err => {
-            if (err) {
-                return console.log(err)
-            }
-            resolve()
-        })
-    })
+    return writeJsonFile('data/user.json', users)
 }
+
