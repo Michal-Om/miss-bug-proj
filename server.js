@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import { bugService } from './services/bug.service.js'
 import { loggerService } from './services/logger.service.js'
 import { userService } from './services/user.service.js'
+import { authService } from './services/auth.service.js'
 
 const app = express()
 app.use(express.static('public'))
@@ -41,11 +42,14 @@ app.get('/api/bug', (req, res) => {
 
 //Creat
 app.post('/api/bug', (req, res) => {
+    const loggedinUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedinUser) return res.status(401).send('Cannot add bug')
     console.log('Server received save request:', req.body)
+
     const bugToSave = bugService.getEmptyBug(req.body)
     console.log(bugToSave)
 
-    bugService.save(bugToSave)
+    bugService.save(bugToSave, loggedinUser)
         .then(savedbug => res.send(savedbug))
         .catch(err => {
             loggerService.error('Failed to save bug', err)
@@ -55,6 +59,9 @@ app.post('/api/bug', (req, res) => {
 
 //Update
 app.put('/api/bug/:bugId', (req, res) => {
+    const loggedinUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedinUser) return res.status(401).send('Cannot update bug')
+
     const { _id, title, description, severity, labels } = req.body
     console.log('Server received save request:', req.body)
     const bugToSave = {
@@ -66,7 +73,7 @@ app.put('/api/bug/:bugId', (req, res) => {
     }
     console.log('Bug to save:', bugToSave)
 
-    bugService.save(bugToSave)
+    bugService.save(bugToSave, loggedinUser)
         .then(savedbug => res.send(savedbug))
         .catch(err => {
             loggerService.error('Failed to save bug', err)
@@ -111,9 +118,11 @@ app.get('/api/bug/:bugId', (req, res) => {
 
 //Remove
 app.delete('/api/bug/:bugId', (req, res) => {
-    const { bugId } = req.params
+    const loggedinUser = authService.validateToken(req.cookies.loginToken)
+    if (!loggedinUser) return res.status(401).send('Cannot delete bug')
 
-    bugService.remove(bugId)
+    const { bugId } = req.params
+    bugService.remove(bugId, loggedinUser)
         .then(() => res.send(`bug ${bugId} deleted`))
         .catch(err => {
             loggerService.error('Cannot get bug', err)
@@ -138,6 +147,37 @@ app.get('/api/user/:userId', (req, res) => {
         .catch(err => {
             loggerService.error('Cannot get user', err)
             res.status(404).send('User not found')
+        })
+})
+
+//Auth API
+app.post('/api/auth/login', (req, res) => {
+    const credentials = req.body
+    authService.checkLogin(credentials)
+        .then(user => {
+            if (user) {
+                const loginToken = authService.getLoginToken(user)
+                res.cookie('loginToken', loginToken)
+                res.send(user)
+            }
+        })
+        .catch(err => {
+            loggerService.error('Login failed', err)
+            res.status(404).send('Invalid Credentials')
+        })
+})
+
+app.post('/api/auth/signup', (req, res) => {
+    const credentials = req.body
+    userService.add(credentials)
+        .then(user => {
+            const loginToken = authService.getLoginToken(user)
+            res.cookie('loginToken', loginToken)
+            res.send(user)
+        })
+        .catch(err => {
+            loggerService.error('Signup failed', err)
+            res.status(400).send('Signup failed')
         })
 })
 

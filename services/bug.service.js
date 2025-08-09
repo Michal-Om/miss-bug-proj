@@ -65,7 +65,7 @@ function getById(bugId) {
     return Promise.resolve(bug)
 }
 
-function remove(bugId) {
+function remove(bugId, loggedinUser) {
     const idx = bugs.findIndex(bug => bug._id === bugId)
 
     if (idx === -1) {
@@ -73,24 +73,29 @@ function remove(bugId) {
         return Promise.reject(`Couldnt remove bug`)
     }
 
+    const bug = bugs[idx]
+    if (bug.creator._id !== loggedinUser._id) return Promise.reject('You did not create this bug')
+
     bugs.splice(idx, 1)
     return _savebugs()
 }
 
-function save(bug) {
+function save(bug, loggedinUser) {
     console.log('bug to save: ', bug)
 
     if (bug._id) {
         const idx = bugs.findIndex(currBug => currBug._id === bug._id)
-
         if (idx === -1) {
             loggerService.error(`Couldnt find bug ${bug._id} in bugService`)
             return Promise.reject(`Couldnt save bug`)
         }
+        const currBug = bugs[idx]
+        if (currBug.creator._id !== loggedinUser._id) return Promise.reject('You did not create this bug')
 
-        bugs[idx] = { ...bugs[idx], ...bug } // Merge updated fields into the existing bug while preserving unchanged properties
+        bugs[idx] = { ...currBug, ...bug } // Merge updated fields into the existing bug while preserving unchanged properties
     } else {
         bug._id = makeId()
+        bug.creator = loggedinUser
         bugs.unshift(bug)
     }
     return _savebugs()
