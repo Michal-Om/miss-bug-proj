@@ -181,6 +181,11 @@ app.post('/api/auth/signup', (req, res) => {
         })
 })
 
+app.post('/api/auth/logout', (req, res) => {
+    res.clearCookie('loginToken')
+    res.send('logged-out!')
+})
+
 const port = 3030
 app.listen(port, () => loggerService.info(`Server listening on port http://127.0.0.1:${port}/`))
 

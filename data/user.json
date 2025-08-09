@@ -35,5 +35,11 @@
         "fullname": "Zuki Ka",
         "password": "secret5",
         "score": 76
+    },
+    {
+        "username": "newuser",
+        "password": "mypassword",
+        "fullname": "New User",
+        "_id": "aFCRh"
     }
 ]
