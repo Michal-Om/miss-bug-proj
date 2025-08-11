@@ -41,5 +41,11 @@
         "password": "mypassword",
         "fullname": "New User",
         "_id": "aFCRh"
+    },
+    {
+        "username": "Michal",
+        "password": "michal",
+        "fullname": "Michal Omri",
+        "_id": "9LjjW"
     }
 ]

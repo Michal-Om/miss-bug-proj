@@ -17,20 +17,6 @@ function query(filterBy = {}, sortBy = {}, page = {}) {
     }
     return axios.get(BASE_URL, { params })
         .then(res => res.data)
-    //FRONTEND FILTER
-    // .then(bugs => {
-
-    //     if (filterBy.txt) {
-    //         const regExp = new RegExp(filterBy.txt, 'i')
-    //         bugs = bugs.filter(bug => regExp.test(bug.title))
-    //     }
-
-    //     if (filterBy.minSeverity) {
-    //         bugs = bugs.filter(bug => bug.severity >= filterBy.minSeverity)
-    //     }
-
-    //     return bugs
-    // })
 }
 
 function getById(bugId) {

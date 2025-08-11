@@ -25,7 +25,7 @@ function signup(user) {
 }
 
 function logout() {
-    sessionSturage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
+    sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
     return Promise.resolve()
 }
 

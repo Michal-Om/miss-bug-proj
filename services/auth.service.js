@@ -17,7 +17,7 @@ function checkLogin({ username, password }) {
                 delete user.password
                 return Promise.resolve(user)
             }
-            return Promise.reject()
+            return Promise.reject('Invalid username or password')
 
         })
 }

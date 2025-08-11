@@ -152,10 +152,15 @@ app.get('/api/user/:userId', (req, res) => {
 
 //Auth API
 app.post('/api/auth/login', (req, res) => {
-    const credentials = req.body
+    // const credentials = req.body
+    const credentials = {
+        username: req.body.username,
+        password: req.body.password
+    }
+
     authService.checkLogin(credentials)
         .then(user => {
-            if (user) {
+            if (user) { //needed? already checked
                 const loginToken = authService.getLoginToken(user)
                 res.cookie('loginToken', loginToken)
                 res.send(user)
@@ -163,7 +168,7 @@ app.post('/api/auth/login', (req, res) => {
         })
         .catch(err => {
             loggerService.error('Login failed', err)
-            res.status(404).send('Invalid Credentials')
+            res.status(404).send('Cannot login')
         })
 })
 
@@ -183,7 +188,7 @@ app.post('/api/auth/signup', (req, res) => {
 
 app.post('/api/auth/logout', (req, res) => {
     res.clearCookie('loginToken')
-    res.send('logged-out!')
+    res.send('Logged out!')
 })
 
 const port = 3030
