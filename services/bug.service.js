@@ -30,6 +30,10 @@ function query(filter, sort, page) {
         bugsToDisplay = bugsToDisplay.filter(bug => bug.severity >= filter.minSeverity)
     }
 
+    if (filter.userId) {
+        bugsToDisplay = bugsToDisplay.filter(bug => bug.creator && bug.creator._id === filter.userId)
+    }
+
     if (sort.sortBy) { //title, severity, createdAt..
         const numericValues = ['severity', 'createdAt']
         if (numericValues.includes(sort.sortBy)) {

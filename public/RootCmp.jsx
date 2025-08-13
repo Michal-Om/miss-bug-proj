@@ -12,6 +12,7 @@ import { BugIndex } from './pages/BugIndex.jsx'
 import { BugDetails } from './pages/BugDetails.jsx'
 import { AboutUs } from './pages/AboutUs.jsx'
 import { LoginSignup } from './pages/LoginSignup.jsx'
+import { UserDetails } from './pages/UserDetails.jsx'
 
 export function RootCmp() {
     const [loggedinUser, setLoggedinUser] = useState(authService.getLoggedinUser())
@@ -27,6 +28,8 @@ export function RootCmp() {
                     <Route path="/bug" element={<BugIndex />} />
                     <Route path="/bug/:bugId" element={<BugDetails />} />
                     <Route path="/about" element={<AboutUs />} />
+
+                    <Route path="/user/:userId" element={<UserDetails />} />
                     <Route path="/auth" element={<LoginSignup setLoggedinUser={setLoggedinUser} />} />
                 </Routes>
             </main>

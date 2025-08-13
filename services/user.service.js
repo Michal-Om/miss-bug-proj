@@ -12,7 +12,11 @@ export const userService = {
 }
 
 function query() {
-    const usersToReturn = users.map(user => ({ _id: user._id, fullname: user.fullname }))
+    const usersToReturn = users.map(user => ({
+        _id: user._id,
+        fullname: user.fullname,
+        username: user.username
+    }))
     return Promise.resolve(usersToReturn)
 }
 
@@ -37,12 +41,24 @@ function remove(userId) {
     return _saveUsersToFile()
 }
 
+//QUESTION: should I use this?
+//function signup({ fullname, username, password }){
+// if(!fullname || !userename || !password)
+// return Promise.reject('Incomplete credentials')
+// }
+
 function add(user) {
 
     return getByUsername(user.username) // Check if username exists...
         .then(existingUser => {
             if (existingUser) return Promise.reject('Username taken')
-
+            // const user ={
+            //    _id: makeId(),
+            //    fullname,
+            //    username,
+            //    password,
+            //    isAdmin: false, 
+            //}
             user._id = makeId()
             // Later, we will call the authService here to encrypt the password
             users.push(user)

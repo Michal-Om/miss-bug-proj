@@ -12,6 +12,8 @@ export const authService = {
 
 function login({ username, password }) {
     return axios.post(BASE_URL + 'login', { username, password })
+        // username and password will be packaged into json obj, 
+        // and sent as HTTP Post request body to the server
         .then(res => res.data)
         .then(_setLoggedinUser)
 }

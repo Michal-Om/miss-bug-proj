@@ -16,12 +16,13 @@ app.use(express.json())
 app.get('/api/bug', (req, res) => {
 
     console.log('GETTING BUGS');
-    const { txt, minSeverity, sortBy, sortDir, pageIdx } = req.query
+    const { txt, minSeverity, sortBy, sortDir, pageIdx, userId } = req.query
     //BACKEND FILTER
     const filter = {
         txt: txt || '',
         minSeverity: +minSeverity || 1,
     }
+    if (userId) filter.userId = userId
     console.log('filterBy:', filter)
 
     const sort = {
@@ -46,8 +47,12 @@ app.post('/api/bug', (req, res) => {
     if (!loggedinUser) return res.status(401).send('Cannot add bug')
     console.log('Server received save request:', req.body)
 
-    const bugToSave = bugService.getEmptyBug(req.body)
-    console.log(bugToSave)
+    // const bugToSave = bugService.getEmptyBug(req.body)
+    // console.log(bugToSave)
+
+    const bugToSave = req.body
+    delete loggedinUser.username
+    bugToSave.creator = loggedinUser
 
     bugService.save(bugToSave, loggedinUser)
         .then(savedbug => res.send(savedbug))

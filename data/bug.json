@@ -1,5 +1,16 @@
 [
     {
+        "title": "Michal's Bug",
+        "severity": 3,
+        "description": "Test for Michal's bug 2 ",
+        "labels": [],
+        "creator": {
+            "fullname": "Michal Omri",
+            "_id": "9LjjW"
+        },
+        "_id": "JysAv"
+    },
+    {
         "_id": "6jocW",
         "title": "Bug 1754134347007",
         "description": "njnkv",
