@@ -3,7 +3,6 @@ const { useNavigate } = ReactRouter
 
 import { authService } from "../services/auth.service.js"
 import { showErrorMsg } from "../services/event-bus.service.js"
-import { UserMsg } from "./UserMsg.jsx"
 
 export function AppHeader({ loggedinUser, setLoggedinUser }) {
 
