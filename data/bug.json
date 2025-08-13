@@ -1,5 +1,20 @@
 [
     {
+        "title": "Michal bug2",
+        "severity": 4,
+        "description": "very bad bug",
+        "labels": [
+            "Anoying",
+            "very bad",
+            "urgent"
+        ],
+        "creator": {
+            "fullname": "Michal Omri",
+            "_id": "9LjjW"
+        },
+        "_id": "KzO8q"
+    },
+    {
         "title": "Michal's Bug",
         "severity": 3,
         "description": "Test for Michal's bug 2 ",

@@ -6,7 +6,7 @@ import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service.js'
 import { BugFilter } from '../cmps/BugFilter.jsx'
 import { BugList } from '../cmps/BugList.jsx'
 
-export function BugIndex() {
+export function BugIndex({ loggedinUser }) {
     const [bugs, setBugs] = useState(null)
     const [filterBy, setFilterBy] = useState(bugService.getDefaultFilter())
     const [sortBy, setSortBy] = useState({ sortBy: 'title', sortDir: 1 })
@@ -36,16 +36,23 @@ export function BugIndex() {
     }
 
     function onAddBug() {
+        console.log('loggedinUser in BugIndex:', loggedinUser)
+        if (!loggedinUser) return showErrorMsg('You must be logged in to add a bug')
+
+        const title = prompt('Bug title?', 'Bug ' + Date.now())
+        const severity = +prompt('Bug severity?', 3)
+        const description = prompt('Bug description?')
+        const labels = (prompt('Bug labels? (comma separated)', '') || '')
+            .split(',')
+            .map(label => label.trim())
+            .filter(label => label)
+
         const bug = {
-            title: prompt('Bug title?', 'Bug ' + Date.now()),
-            severity: +prompt('Bug severity?', 3),
-            description: prompt('Bug description?'),
-            labels: (
-                prompt('Bug labels? (comma separated)', '') || ''
-            )
-                .split(',')
-                .map(label => label.trim())
-                .filter(label => label)
+            title,
+            severity,
+            description,
+            labels,
+            creator: loggedinUser
         }
 
         bugService.save(bug)
